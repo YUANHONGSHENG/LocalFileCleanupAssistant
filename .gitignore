@@ -1,0 +1,26 @@
+# Runtime data (may contain personal paths / file names)
+data/
+logs/
+quarantine/
+LocalFileCleanupAssistantData/
+*.log
+
+# Build output
+dist/
+*.exe
+*.zip
+*.pdb
+*.dll
+
+# Debug output
+open-test-*.txt
+ps5-launch-*.txt
+
+# Test fixtures (may contain personal files)
+dev-fixture/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo

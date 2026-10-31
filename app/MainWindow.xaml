@@ -1,0 +1,595 @@
+﻿<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="本地文件清理助手"
+        Width="1360" Height="860" MinWidth="1180" MinHeight="700"
+        WindowState="Maximized"
+        WindowStartupLocation="CenterScreen"
+        Background="#F3F4F6"
+        FontFamily="Microsoft YaHei UI"
+        FontSize="13">
+    <Window.Resources>
+        <SolidColorBrush x:Key="Ink" Color="#111827"/>
+        <SolidColorBrush x:Key="Muted" Color="#6B7280"/>
+        <SolidColorBrush x:Key="Line" Color="#E5E7EB"/>
+        <SolidColorBrush x:Key="Accent" Color="#2563EB"/>
+        <SolidColorBrush x:Key="AccentDark" Color="#1D4ED8"/>
+        <SolidColorBrush x:Key="Danger" Color="#DC2626"/>
+        <SolidColorBrush x:Key="Warn" Color="#B45309"/>
+        <SolidColorBrush x:Key="SurfaceHover" Color="#F3F4F6"/>
+        <SolidColorBrush x:Key="CardBorder" Color="#E5E7EB"/>
+        <Style x:Key="Card" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="18"/>
+            <Setter Property="Margin" Value="0,0,0,14"/>
+        </Style>
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource Accent}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentDark}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="16,8"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentDark}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.45"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="SecondaryButton" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SurfaceHover}"/>
+                    <Setter Property="BorderBrush" Value="#9CA3AF"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.45"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DangerButton" TargetType="Button">
+            <Setter Property="Background" Value="#FEF2F2"/>
+            <Setter Property="Foreground" Value="{StaticResource Danger}"/>
+            <Setter Property="BorderBrush" Value="#FCA5A5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,7"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FEE2E2"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.45"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="SmallButton" TargetType="Button">
+            <Setter Property="Background" Value="#F3F4F6"/>
+            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+            <Setter Property="BorderBrush" Value="#D1D5DB"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="7,3"/>
+            <Setter Property="Margin" Value="0,0,4,0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#E5E7EB"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="GridColumnHeader" TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="#F9FAFB"/>
+            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="12,9"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Line}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Height" Value="38"/>
+        </Style>
+        <Style x:Key="GridCell" TargetType="DataGridCell">
+            <Setter Property="Padding" Value="10,7"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+                    <Setter Property="Background" Value="#EFF6FF"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="GridRow" TargetType="DataGridRow">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+            <Setter Property="MinHeight" Value="34"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource SurfaceHover}"/>
+                    <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#EFF6FF"/>
+                    <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="TabHeader" TargetType="TabItem">
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource Ink}"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+        </Style>
+        <Style x:Key="Hint" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource Muted}"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="LineHeight" Value="20"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="#111827" Padding="24,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="本地文件清理助手" Foreground="White" FontSize="22" FontWeight="Bold"/>
+                    <TextBlock Text="只扫描、只生成候选；未经二次确认不会删除或移动任何文件"
+                               Foreground="#D1D5DB" Margin="0,4,0,0"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button x:Name="BatchesButton" Content="批次与恢复" Style="{StaticResource SecondaryButton}"/>
+                    <Button x:Name="OpenDataButton" Content="打开数据目录" Style="{StaticResource SecondaryButton}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" x:Name="PageHost">
+            <!-- ============================ RANGE PAGE ============================ -->
+            <ScrollViewer x:Name="RangePage" VerticalScrollBarVisibility="Auto">
+                <Grid Margin="24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="1.05*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="第 1 步：确认扫描范围" Style="{StaticResource SectionTitle}"/>
+                                <TextBlock Style="{StaticResource Hint}"
+                                           Text="只扫描下面勾选的目录。扫描阶段只读取元数据，并对同大小/同名的候选文件计算 SHA-256；不会写入、移动、重命名或删除文件。"/>
+                                <Border Background="#F9FAFB" BorderBrush="{StaticResource Line}" BorderThickness="1"
+                                        CornerRadius="8" Padding="12" Margin="0,12,0,12">
+                                    <StackPanel x:Name="RootsPanel"/>
+                                </Border>
+
+                                <TextBlock Text="阈值设置" FontWeight="SemiBold" Margin="0,4,0,8"/>
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="24"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="90"/>
+                                        <ColumnDefinition Width="24"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="90"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Grid.Column="0" Text="大文件不小于" VerticalAlignment="Center" Margin="0,0,8,6"/>
+                                    <TextBox x:Name="LargeSizeBox" Grid.Row="0" Grid.Column="1" Text="524288000" Padding="6,4" Margin="0,0,0,6"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="B" VerticalAlignment="Center" Margin="6,0,0,6"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="3" Text="未修改超过" VerticalAlignment="Center" Margin="0,0,8,6"/>
+                                    <TextBox x:Name="ModifiedDaysBox" Grid.Row="0" Grid.Column="4" Text="365" Padding="6,4" Margin="0,0,0,6"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="5" Text="天" VerticalAlignment="Center" Margin="6,0,0,6"/>
+                                    <TextBlock Grid.Row="0" Grid.Column="6" Text="未访问超过" VerticalAlignment="Center" Margin="0,0,8,6"/>
+                                    <TextBox x:Name="AccessedDaysBox" Grid.Row="0" Grid.Column="7" Text="180" Padding="6,4" Margin="0,0,0,6"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="0" Text="临时文件超过" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBox x:Name="TempDaysBox" Grid.Row="1" Grid.Column="1" Text="30" Padding="6,4"/>
+                                    <TextBlock Grid.Row="1" Grid.Column="2" Text="天" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                                </Grid>
+
+                                <CheckBox x:Name="CacheEnabledCheckBox"
+                                          Content="启用哈希缓存（重复扫描更快；文件修改后会自动重新计算）"
+                                          IsChecked="True" Margin="0,8,0,8"/>
+
+                                <CheckBox x:Name="ConfirmScopeCheckBox"
+                                          Content="我确认以上扫描范围和排除项；扫描阶段不会修改任何文件"
+                                          FontWeight="SemiBold" Margin="0,4,0,12"/>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="StartScanButton" Content="开始扫描（只读）"
+                                            Style="{StaticResource PrimaryButton}" IsEnabled="False"/>
+                                    <Button x:Name="LoadLastButton" Content="加载上次结果"
+                                            Style="{StaticResource SecondaryButton}"/>
+                                    <Button x:Name="TraceCleanupButton" Content="痕迹清理"
+                                            Style="{StaticResource SecondaryButton}"/>
+                                    <Button x:Name="HistoryButton" Content="历史记录"
+                                            Style="{StaticResource SecondaryButton}"/>
+                                </StackPanel>
+                                <TextBlock x:Name="RangeStatusText" Style="{StaticResource Hint}" Margin="0,10,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="默认排除项" Style="{StaticResource SectionTitle}"/>
+                                <TextBlock Style="{StaticResource Hint}"
+                                           Text="以下目录和类型不会被打开或统计。排除项也会写入扫描日志，便于核对。"/>
+                                <ScrollViewer Height="410" VerticalScrollBarVisibility="Auto" Margin="0,10,0,0">
+                                    <TextBlock x:Name="ExclusionsText" TextWrapping="Wrap" LineHeight="20" FontSize="12"/>
+                                </ScrollViewer>
+                            </StackPanel>
+                        </Border>
+                        <Border Style="{StaticResource Card}">
+                            <StackPanel>
+                                <TextBlock Text="安全边界" Style="{StaticResource SectionTitle}"/>
+                                <TextBlock Style="{StaticResource Hint}"
+                                           Text="• 所有候选项默认不勾选。&#10;• 不提供“一键全选并永久删除”。&#10;• 全选仅限当前筛选结果，并需要二次确认。&#10;• 删除默认进入回收站；过大或不可用时进入隔离目录。&#10;• 权限不足、文件被占用、读取失败时只记录并跳过，不提升权限、不强制处理。&#10;• 永久删除是独立操作，需再次输入确认。&#10;• 本工具不联网；但系统默认程序打开文件时可能有自己的网络行为。"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </ScrollViewer>
+
+            <!-- ============================ SCAN PAGE ============================ -->
+            <Grid x:Name="ScanPage" Visibility="Collapsed" Margin="24">
+                <Border Style="{StaticResource Card}" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Text="第 2 步：扫描中" Style="{StaticResource SectionTitle}"/>
+                        <TextBlock Style="{StaticResource Hint}"
+                                   Text="正在读取元数据并计算必要的 SHA-256。此阶段不会修改任何文件。你可以随时取消。"/>
+                        <ProgressBar x:Name="ScanProgress" Height="16" IsIndeterminate="True" Margin="0,16,0,10"/>
+                        <TextBlock x:Name="ScanPhaseText" FontWeight="SemiBold" FontSize="15"/>
+                        <TextBlock x:Name="ScanCurrentPathText" Style="{StaticResource Hint}" Margin="0,4,0,14"
+                                   TextTrimming="CharacterEllipsis"/>
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="文件" Foreground="{StaticResource Muted}"/>
+                                <TextBlock x:Name="ScanFilesText" Text="0" FontSize="20" FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="目录" Foreground="{StaticResource Muted}"/>
+                                <TextBlock x:Name="ScanDirsText" Text="0" FontSize="20" FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="已哈希" Foreground="{StaticResource Muted}"/>
+                                <TextBlock x:Name="ScanHashedText" Text="0" FontSize="20" FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="3">
+                                <TextBlock Text="错误/跳过" Foreground="{StaticResource Muted}"/>
+                                <TextBlock x:Name="ScanErrorsText" Text="0" FontSize="20" FontWeight="Bold"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="已用时间" Foreground="{StaticResource Muted}"/>
+                                <TextBlock x:Name="ScanElapsedText" Text="0s" FontSize="20" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel Orientation="Horizontal">
+                            <Button x:Name="CancelScanButton" Content="取消扫描（不会修改文件）"
+                                    Style="{StaticResource DangerButton}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- ============================ RESULTS PAGE ============================ -->
+            <Grid x:Name="ResultsPage" Visibility="Collapsed" Margin="16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" Style="{StaticResource Card}" Padding="14">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock x:Name="ResultsTitleText" Text="候选清单" FontSize="20" FontWeight="Bold"/>
+                            <TextBlock x:Name="ResultsSummaryText" Style="{StaticResource Hint}" Margin="0,4,0,0"/>
+                            <WrapPanel x:Name="StatsPanel" Orientation="Horizontal" Margin="0,10,0,0"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button x:Name="KeepSelectedButton" Content="保留选中副本"
+                                    Style="{StaticResource SecondaryButton}"/>
+                            <Button x:Name="SelectRestButton" Content="选择同组其余副本"
+                                    Style="{StaticResource SecondaryButton}"/>
+                            <Button x:Name="AllGroupButton" Content="处理同组全部副本…"
+                                    Style="{StaticResource DangerButton}"/>
+                            <Button x:Name="PreselectDuplicatesButton" Content="预选重复副本"
+                                    Style="{StaticResource SecondaryButton}"
+                                    ToolTip="勾选每个重复组中除保留副本外的其余副本；每组保留 1 份。不会执行删除。"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <TabControl x:Name="CategoryTabs" Grid.Row="1" Margin="0,0,0,10"
+                            Background="Transparent" BorderThickness="0">
+                    <TabItem Header="全部候选" Tag="CANDS" Style="{StaticResource TabHeader}"/>
+                    <TabItem Header="完全重复" Tag="DUP" Style="{StaticResource TabHeader}"/>
+                    <TabItem Header="长期未使用的大文件" Tag="LARGE" Style="{StaticResource TabHeader}"/>
+                    <TabItem Header="临时文件" Tag="TEMP" Style="{StaticResource TabHeader}"/>
+                    <TabItem Header="同名不同内容" Tag="SAMENAME" Style="{StaticResource TabHeader}"/>
+                    <TabItem Header="可能的历史版本" Tag="VERSION" Style="{StaticResource TabHeader}"/>
+                    <TabItem Header="跳过/错误" Tag="ERROR" Style="{StaticResource TabHeader}"/>
+                </TabControl>
+
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <WrapPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
+                        <TextBox x:Name="SearchBox" Width="220" Padding="8,6" Margin="0,0,8,6"
+                                 ToolTip="按文件名或完整路径搜索"/>
+                        <ComboBox x:Name="DirectoryFilter" Width="190" Margin="0,0,8,6" Padding="6,4"/>
+                        <ComboBox x:Name="TypeFilter" Width="120" Margin="0,0,8,6" Padding="6,4"/>
+                        <ComboBox x:Name="RiskFilter" Width="100" Margin="0,0,8,6" Padding="6,4"/>
+                        <ComboBox x:Name="SizeFilter" Width="130" Margin="0,0,8,6" Padding="6,4"/>
+                        <ComboBox x:Name="TimeFilter" Width="140" Margin="0,0,8,6" Padding="6,4"/>
+                        <ComboBox x:Name="SortFilter" Width="150" Margin="0,0,8,6" Padding="6,4"/>
+                        <CheckBox x:Name="SelectedOnlyCheckBox" Content="仅显示已勾选" VerticalAlignment="Center" Margin="0,0,12,6"/>
+                        <Button x:Name="ApplyFilterButton" Content="应用筛选" Style="{StaticResource SmallButton}" Margin="0,0,8,6"/>
+                        <Button x:Name="PreviewSelectedButton" Content="预览选中" Style="{StaticResource SmallButton}" Margin="0,0,8,6"/>
+                        <Button x:Name="OpenSelectedFolderButton" Content="查看文件夹" Style="{StaticResource SmallButton}" Margin="0,0,8,6"
+                                ToolTip="在程序内查看选中文件所在文件夹；不调用资源管理器。"/>
+                        <Button x:Name="CopyPathButton" Content="复制路径" Style="{StaticResource SmallButton}" Margin="0,0,8,6"/>
+                        <Button x:Name="RefreshStatusButton" Content="刷新状态" Style="{StaticResource SmallButton}" Margin="0,0,8,6"/>
+                    </WrapPanel>
+
+                    <WrapPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
+                        <Button x:Name="SelectVisibleButton" Content="全选当前显示" Style="{StaticResource SecondaryButton}" Margin="0,0,8,0"
+                                ToolTip="勾选当前筛选结果中所有可勾选的文件；只勾选，不删除。"/>
+                        <Button x:Name="ClearVisibleButton" Content="取消当前显示" Style="{StaticResource SmallButton}" Margin="0,0,8,0"
+                                ToolTip="取消当前筛选结果中的勾选，不影响其他筛选结果。"/>
+                        <Button x:Name="SelectSameFolderButton" Content="选中同文件夹" Style="{StaticResource SmallButton}" Margin="0,0,8,0"
+                                ToolTip="先选中一行；勾选该行所在文件夹中的全部候选。"/>
+                        <Button x:Name="ClearSameFolderButton" Content="取消选中同文件夹" Style="{StaticResource SmallButton}" Margin="0,0,8,0"
+                                ToolTip="先选中一行；从勾选结果中取消该行所在文件夹里的全部已勾选文件。"/>
+                        <Button x:Name="ClearSameFolderTypeButton" Content="取消同文件夹同类型" Style="{StaticResource SmallButton}" Margin="0,0,8,0"
+                                ToolTip="先选中一行；从勾选结果中取消该文件夹内同类型的已勾选文件。"/>
+                        <Button x:Name="SelectSameFolderTypeButton" Content="同文件夹同类型" Style="{StaticResource SmallButton}" Margin="0,0,8,0"
+                                ToolTip="先选中一张图片或一个文档；勾选同文件夹内同类型的候选。"/>
+                        <Button x:Name="SelectImagesButton" Content="选中所有图片" Style="{StaticResource SmallButton}" Margin="0,0,8,0"
+                                ToolTip="勾选清单中所有图片候选；会显示数量和风险供确认。"/>
+                        <TextBlock Text="批量选择只勾选，不删除；生成最终清单后仍需再次确认。" Foreground="{StaticResource Muted}"
+                                   VerticalAlignment="Center" FontSize="12" Margin="8,0,0,0"/>
+                    </WrapPanel>
+
+                    <DataGrid x:Name="FilesGrid" Grid.Row="2"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              IsReadOnly="False"
+                              SelectionMode="Single"
+                              SelectionUnit="FullRow"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="Horizontal"
+                              RowHeaderWidth="0"
+                              RowHeight="44"
+                              EnableRowVirtualization="True"
+                              VirtualizingPanel.IsVirtualizing="True"
+                              VirtualizingPanel.VirtualizationMode="Recycling"
+                              Background="White"
+                              BorderBrush="{StaticResource Line}"
+                              BorderThickness="1"
+                              ColumnHeaderStyle="{StaticResource GridColumnHeader}"
+                              CellStyle="{StaticResource GridCell}">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow" BasedOn="{StaticResource GridRow}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Exists}" Value="False">
+                                        <Setter Property="Foreground" Value="#9CA3AF"/>
+                                        <Setter Property="Background" Value="#F3F4F6"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="选择" Width="52">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  IsEnabled="{Binding CanSelect}"
+                                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="组" Binding="{Binding GroupId}" Width="62" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="保留" Binding="{Binding KeepMark}" Width="50" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="状态" Binding="{Binding StatusText}" Width="96" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="文件名" Binding="{Binding Name}" Width="180" IsReadOnly="True">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="ToolTip" Value="{Binding Name}"/>
+                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTemplateColumn Header="完整路径" Width="300" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Path}" TextTrimming="CharacterEllipsis"
+                                                   ToolTip="{Binding Path}" VerticalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="类型" Binding="{Binding TypeText}" Width="95" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="用途说明" Binding="{Binding Purpose}" Width="180" IsReadOnly="True">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="ToolTip" Value="{Binding Purpose}"/>
+                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="大小" Binding="{Binding SizeText}" SortMemberPath="Size" Width="88" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="修改时间" Binding="{Binding ModifiedText}" SortMemberPath="Modified" Width="125" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="最近访问" Binding="{Binding AccessedText}" SortMemberPath="Accessed" Width="125" IsReadOnly="True"/>
+                            <DataGridTemplateColumn Header="推荐理由" Width="*" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Reason}" TextWrapping="NoWrap"
+                                                   TextTrimming="CharacterEllipsis"
+                                                   ToolTip="{Binding Reason}" VerticalAlignment="Center"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="风险" Binding="{Binding Risk}" Width="70" IsReadOnly="True">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontWeight" Value="SemiBold"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Risk}" Value="高">
+                                                <Setter Property="Foreground" Value="{StaticResource Danger}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Risk}" Value="不建议">
+                                                <Setter Property="Foreground" Value="{StaticResource Danger}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Risk}" Value="中">
+                                                <Setter Property="Foreground" Value="{StaticResource Warn}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Risk}" Value="低">
+                                                <Setter Property="Foreground" Value="{StaticResource Accent}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTemplateColumn Header="操作" Width="120" IsReadOnly="True">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="查看文件夹" Tag="{Binding}"
+                                                Style="{StaticResource SmallButton}"
+                                                ToolTip="在程序内查看该文件所在文件夹，不会调用资源管理器。"/>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Expander x:Name="DetailsExpander" Grid.Row="3" Header="选中行详情（完整理由、用途、路径、哈希）"
+                              IsExpanded="False" Margin="0,8,0,0">
+                        <Border Background="#F9FAFB" BorderBrush="{StaticResource Line}" BorderThickness="1"
+                                CornerRadius="6" Padding="10" Margin="0,4,0,0">
+                            <ScrollViewer MaxHeight="150" VerticalScrollBarVisibility="Auto">
+                                <TextBlock x:Name="RowDetailsText" Text="选中一行查看完整详情。" TextWrapping="Wrap"
+                                           LineHeight="20" FontFamily="Microsoft YaHei UI" FontSize="12"/>
+                            </ScrollViewer>
+                        </Border>
+                    </Expander>
+                </Grid>
+
+                <Border Grid.Row="3" Style="{StaticResource Card}" Padding="12" Margin="0,10,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock x:Name="SelectionSummaryText" Text="已勾选 0 个文件 | 0 个目录 | 预计移出 0 B"
+                                       FontWeight="SemiBold" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                            <TextBlock x:Name="VisibleCountText" Text="" Foreground="{StaticResource Muted}"
+                                       VerticalAlignment="Center"/>
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button x:Name="SelectNoneButton" Content="全部取消勾选"
+                                    Style="{StaticResource SecondaryButton}"/>
+                            <Button x:Name="SelectFilteredButton" Content="全选当前筛选结果"
+                                    Style="{StaticResource SecondaryButton}"/>
+                            <Button x:Name="OpenRecycleBinButton" Content="打开回收站"
+                                    Style="{StaticResource SecondaryButton}"/>
+                            <Button x:Name="GenerateManifestButton" Content="生成最终操作清单"
+                                    Style="{StaticResource PrimaryButton}" IsEnabled="False"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <Border Grid.Row="2" Background="#E5E7EB" Padding="18,8">
+            <TextBlock x:Name="FooterText" Text="本工具只在本机运行，不上传文件内容、文件名或路径。" Foreground="#374151"/>
+        </Border>
+    </Grid>
+</Window>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
