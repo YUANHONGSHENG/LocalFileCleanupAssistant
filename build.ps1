@@ -1,4 +1,4 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 
 $root = $PSScriptRoot
 $dist = Join-Path $root 'dist'
@@ -11,6 +11,8 @@ if (-not (Test-Path -LiteralPath $csc)) {
     throw "csc.exe not found: $csc"
 }
 
+if (Test-Path -LiteralPath $scriptDir) { Remove-Item -LiteralPath $scriptDir -Recurse -Force }
+if (Test-Path -LiteralPath $portableDir) { Remove-Item -LiteralPath $portableDir -Recurse -Force }
 foreach ($d in @($dist, $singleDir, $scriptDir, $portableDir)) {
     [void][IO.Directory]::CreateDirectory($d)
 }
@@ -50,7 +52,7 @@ Copy-Item -LiteralPath (Join-Path $root 'README.md') -Destination (Join-Path $sc
 Copy-Item -LiteralPath (Join-Path $root 'LICENSE') -Destination (Join-Path $scriptDir 'LICENSE') -Force
 $scriptZip = Join-Path $dist 'LocalFileCleanupAssistant-script.zip'
 if (Test-Path -LiteralPath $scriptZip) { Remove-Item -LiteralPath $scriptZip -Force }
-Compress-Archive -LiteralPath $scriptDir -DestinationPath $scriptZip -Force
+Compress-Archive -Path (Join-Path $scriptDir '*') -DestinationPath $scriptZip -Force
 
 # 4. Portable package
 Copy-Item -LiteralPath (Join-Path $root 'app') -Destination (Join-Path $portableDir 'app') -Recurse -Force
@@ -59,7 +61,7 @@ Copy-Item -LiteralPath (Join-Path $root 'README.md') -Destination (Join-Path $po
 Copy-Item -LiteralPath (Join-Path $root 'LICENSE') -Destination (Join-Path $portableDir 'LICENSE') -Force
 $portableZip = Join-Path $dist 'LocalFileCleanupAssistant-portable.zip'
 if (Test-Path -LiteralPath $portableZip) { Remove-Item -LiteralPath $portableZip -Force }
-Compress-Archive -LiteralPath $portableDir -DestinationPath $portableZip -Force
+Compress-Archive -Path (Join-Path $portableDir '*') -DestinationPath $portableZip -Force
 
 # 5. Checksums
 $lines = @()
@@ -73,3 +75,4 @@ $sumFile = Join-Path $dist 'SHA256.txt'
 [IO.File]::WriteAllLines($sumFile, $lines, [Text.UTF8Encoding]::new($false))
 $lines | ForEach-Object { Write-Host $_ }
 Write-Host "Done: $dist"
+
